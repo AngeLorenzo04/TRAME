@@ -1,6 +1,6 @@
 "use client"
 
-import { useMemo, useCallback, memo } from "react"
+import { useMemo, useCallback, memo, useState, useEffect } from "react"
 import { BrowserRouter, Routes, Route, useNavigate, useParams, Navigate, useLocation } from "react-router-dom"
 import { Flame, Map, Award, Trophy } from "lucide-react"
 import { Sidebar, type NavKey } from "@/components/sidebar"
@@ -217,6 +217,14 @@ function DashboardContent() {
 }
 
 export function Dashboard() {
+  const [mounted, setMounted] = useState(false)
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
+
+  if (!mounted) return null
+
   return (
     <BrowserRouter>
       <DashboardContent />
