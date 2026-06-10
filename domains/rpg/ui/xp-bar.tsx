@@ -11,18 +11,18 @@ export const XPBar = memo(function XPBar({ xp, decay }: { xp: number; decay: num
     <div className="w-full space-y-2">
       <div className="flex items-end justify-between px-1">
         <div className="flex flex-col">
-          <span className="text-[7px] font-black text-steel uppercase tracking-widest">EXPERIENCE POOL</span>
-          <p className="text-[18px] font-black leading-none text-paper uppercase tracking-tighter">
-            {xp.toLocaleString()} <span className="text-[var(--color-blood)] text-[12px]">XP</span>
+          <span className="text-[8px] font-black text-[var(--color-cyan)] uppercase tracking-[0.2em] text-shadow-glow">EXPERIENCE_POOL</span>
+          <p className="text-[24px] font-black leading-none text-paper uppercase tracking-tighter">
+            {xp.toLocaleString()} <span className="text-[var(--color-cyan)] text-[14px] opacity-80">XP</span>
           </p>
         </div>
         <div className="flex flex-col items-end">
-          <span className="text-[7px] font-black text-[var(--color-blood)] uppercase tracking-widest">DECAY RATE</span>
-          <p className="text-[12px] font-black leading-none text-[var(--color-blood)]">-{Math.round(decay * 100)}%</p>
+          <span className="text-[8px] font-black text-[var(--color-blood)] uppercase tracking-[0.2em] animate-pulse">DECAY_RATE</span>
+          <p className="text-[14px] font-black leading-none text-[var(--color-blood)] text-shadow-glow">-{Math.round(decay * 100)}%</p>
         </div>
       </div>
 
-      <div className="flex gap-[2px] bg-[var(--color-ink-deep)] p-2 pixel-border border-b-4 border-b-black/40">
+      <div className="flex gap-[3px] bg-black/60 p-2 pixel-border border-b-4 border-b-black/80 shadow-[inset_0_0_10px_rgba(0,0,0,0.5)]">
         {Array.from({ length: segments }).map((_, i) => {
           const isFilled = i < filledSegments
           const isDecaying = i >= filledSegments - decaySegments && i < filledSegments
@@ -31,10 +31,10 @@ export const XPBar = memo(function XPBar({ xp, decay }: { xp: number; decay: num
               key={i}
               className={
                 isDecaying
-                  ? "h-5 flex-1 animate-decay bg-[var(--color-steel)]"
+                  ? "h-6 flex-1 animate-decay bg-[var(--color-blood-dark)] opacity-50"
                   : isFilled
-                    ? "h-5 flex-1 bg-[var(--color-blood)] shadow-[inset_-2px_-2px_0_0_var(--color-blood-dark)]"
-                    : "h-5 flex-1 bg-[var(--color-ink)]"
+                    ? "h-6 flex-1 bg-[var(--color-cyan)] shadow-[inset_-2px_-2px_0_0_var(--color-cyan-dark)] glow-cyan"
+                    : "h-6 flex-1 bg-white/5 border border-white/10"
               }
             />
           )

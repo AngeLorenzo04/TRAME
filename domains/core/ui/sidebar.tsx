@@ -1,7 +1,8 @@
 "use client"
 import { memo } from "react"
-import { Home, Map, ListChecks, User, Settings } from "lucide-react"
+import { Home, Map, ListChecks, User, Settings, LogOut } from "lucide-react"
 import { cn } from "@/lib/utils"
+import { useGame } from "../store"
 
 export type NavKey = "dashboard" | "trame" | "task" | "profilo" | "settings"
 
@@ -20,6 +21,8 @@ export const Sidebar = memo(function Sidebar({
   active: NavKey
   onSelect: (key: NavKey) => void
 }) {
+  const { signOut } = useGame()
+
   return (
     <aside className="scanlines flex shrink-0 flex-col gap-8 bg-[var(--color-ink-deep)] p-4 pixel-border md:w-64 md:p-6">
       {/* Logo */}
@@ -62,8 +65,17 @@ export const Sidebar = memo(function Sidebar({
       </nav>
 
       {/* Footer info */}
-      <div className="mt-auto hidden border-t-2 border-[var(--color-ink)] pt-4 md:block">
-        <p className="text-[7px] text-steel">SYSTEM STATUS: <span className="text-green-500">ONLINE</span></p>
+      <div className="mt-auto flex flex-col gap-4">
+        <button 
+          onClick={() => signOut()} 
+          className="group flex items-center gap-3 p-3 text-[9px] font-black text-[var(--color-blood)] hover:bg-[var(--color-blood)] hover:text-paper transition-colors pixel-border border-[var(--color-blood)]/30"
+        >
+          <LogOut className="size-4" />
+          <span className="hidden md:inline uppercase tracking-widest">TERMINATE_SESSION</span>
+        </button>
+        <div className="hidden border-t-2 border-[var(--color-ink)] pt-4 md:block">
+          <p className="text-[7px] text-steel">SYSTEM STATUS: <span className="text-green-500">ONLINE</span></p>
+        </div>
       </div>
     </aside>
   )

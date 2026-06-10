@@ -4,6 +4,8 @@ import { user as initialUser, trame as initialTrame, quickStats as initialStats 
 import type { UserData, Trame, QuickStats } from "./game-data"
 import { eventBus } from "./events"
 import { createTaskSlice, TaskSlice } from "@/domains/tasks/store"
+import { createAuthSlice, AuthSlice } from "@/domains/auth/store/auth-slice"
+import { supabase } from "./supabase"
 
 interface TrameSlice {
   trame: Trame[]
@@ -16,7 +18,7 @@ interface CharacterSlice {
   addXP: (amount: number) => void
 }
 
-type GameState = TaskSlice & TrameSlice & CharacterSlice
+type GameState = TaskSlice & TrameSlice & CharacterSlice & AuthSlice
 
 const createTrameSlice = (set, get) => ({
   trame: initialTrame,
@@ -43,22 +45,19 @@ const createTrameSlice = (set, get) => ({
   },
 })
 
-const createCharacterSlice = (set, get) => {
-  // We only subscribe once. Zustand's create handles this if called inside.
-  // Note: Subscription should ideally be outside or handled carefully to avoid duplicates.
-  return {
-    user: initialUser,
-    quickStats: initialStats,
-    addXP: (amount) => set((state) => ({ user: { ...state.user, xp: state.user.xp + amount } })),
-  }
-}
+const createCharacterSlice = (set) => ({
+  user: initialUser,
+  quickStats: initialStats,
+  addXP: (amount) => set((state) => ({ user: { ...state.user, xp: state.user.xp + amount } })),
+})
 
 export const useGameStore = create<GameState>()(
   persist(
     (set, get, store) => ({
       ...createTaskSlice(set, get, store),
       ...createTrameSlice(set, get),
-      ...createCharacterSlice(set, get),
+      ...createCharacterSlice(set),
+      ...createAuthSlice(set, get, store),
     }),
     {
       name: "pixel-habit-storage",
@@ -67,8 +66,13 @@ export const useGameStore = create<GameState>()(
   )
 )
 
-// Global event subscription to avoid duplicates during re-renders/hot-reloads
+// Global session listener
 if (typeof window !== "undefined") {
+  // Sync Supabase Auth with Zustand
+  supabase?.auth?.onAuthStateChange((_event, session) => {
+    useGameStore.getState().setSessionUser(session?.user ?? null)
+  })
+
   eventBus.subscribe((event) => {
     const store = useGameStore.getState()
     if (event.type === "TASK_TOGGLED" || event.type === "TRAME_TASK_TOGGLED") {

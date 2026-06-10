@@ -13,6 +13,7 @@ import { TrameDetail } from "@/domains/trames/ui/trame-detail"
 import { StreakCounter } from "@/domains/rpg/ui/streak-counter"
 import { StatsCard } from "@/domains/rpg/ui/stats-card"
 import { ToastSystem } from "@/domains/core/ui/toast-system"
+import { LoginTerminal } from "@/domains/auth/ui/login-terminal"
 import { quickStats, trame } from "@/domains/core/game-data"
 import { useGame } from "@/domains/core/store"
 
@@ -56,7 +57,7 @@ const TrameGrid = memo(function TrameGrid({ onOpen }: { onOpen?: (id: number) =>
 })
 
 function DashboardView() {
-  const { user, tasks, toggleTask } = useGame()
+  const { user, tasks, toggleTask, sessionUser } = useGame()
   const navigate = useNavigate()
 
   const { done, total, earned } = useMemo(() => {
@@ -138,9 +139,9 @@ function DashboardView() {
       <section className="animate-pixel-in" style={{ animationDelay: "300ms" }}>
         <SectionTitle hint="GLOBAL RANKING & ACHIEVEMENTS">SYSTEM STATS</SectionTitle>
         <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
-          <StatsCard icon={Flame} label="STREAK" value={`${quickStats.currentStreak} DAYS`} />
-          <StatsCard icon={Map} label="QUESTS" value={`${quickStats.activeTrames} ACTIVE`} />
-          <StatsCard icon={Award} label="BADGES" value={`${quickStats.achievementsUnlocked} UNLOCKED`} />
+          <StatsCard icon={Flame} label="STREAK" value={`${quickStats.currentStreak} DAYS`} color="blood" />
+          <StatsCard icon={Map} label="QUESTS" value={`${quickStats.activeTrames} ACTIVE`} color="cyan" />
+          <StatsCard icon={Award} label="BADGES" value={`${quickStats.achievementsUnlocked} UNLOCKED`} color="gold" />
           <StatsCard icon={Trophy} label="RANK" value={`#${quickStats.leaderboardRank}`} />
         </div>
       </section>
@@ -198,6 +199,7 @@ const Placeholder = memo(function Placeholder({ title, subtitle }: { title: stri
 })
 
 function DashboardContent() {
+  const { sessionUser } = useGame()
   const navigate = useNavigate()
   const location = useLocation()
   
@@ -209,6 +211,8 @@ function DashboardContent() {
   const handleSelect = useCallback((key: NavKey) => {
     navigate(`/${key === "dashboard" ? "" : key}`)
   }, [navigate])
+
+  if (!sessionUser) return <LoginTerminal />
 
   return (
     <main className="flex min-h-screen gap-6 bg-background p-4 md:gap-8 md:p-8 cursor-default">

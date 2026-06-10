@@ -5,29 +5,23 @@
   --font-sans: var(--font-pixel-base), monospace;
   --font-mono: var(--font-pixel-base), monospace;
 
-  /* Pixel palette - Vibrance Up */
-  --color-ink: #1d1e2c;
-  --color-ink-deep: #0f101a;
-  --color-steel: #7d8ea3;
-  --color-paper: #f8f9fa;
+  /* Premium Cyber-RPG Palette */
+  --color-ink: #111115;       /* Sfondo principale più scuro */
+  --color-ink-deep: #08080a;  /* Sfondo card profondissimo */
+  --color-steel: #5f6e80;     /* Testo secondario */
+  --color-paper: #e2e8f0;     /* Testo principale più morbido */
+  
+  /* Accenti vibranti per l'effetto Glow */
   --color-blood: #ff2a4d;
   --color-blood-dark: #c1121f;
-  --color-gold: #ffb703;
+  --color-gold: #ffd166;
   --color-gold-dark: #fb8500;
-  --color-cyan: #219ebc;
-  --color-blue: #023e8a;
+  --color-cyan: #4cc9f0;
+  --color-cyan-dark: #023e8a;
 
   --color-background: var(--color-ink);
   --color-foreground: var(--color-paper);
-  --color-card: var(--color-ink-deep);
-  --color-card-foreground: var(--color-paper);
   --color-border: var(--color-steel);
-  --color-primary: var(--color-blood);
-  --color-primary-foreground: var(--color-paper);
-  --color-muted: var(--color-steel);
-  --color-muted-foreground: var(--color-steel);
-  --color-accent: var(--color-gold);
-  --color-accent-foreground: var(--color-ink-deep);
 
   --radius-sm: 0px;
   --radius-md: 0px;
@@ -46,12 +40,14 @@
     color: var(--color-foreground);
     -webkit-font-smoothing: none;
     -moz-osx-font-smoothing: grayscale;
-    cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" style="fill:white;stroke:black;stroke-width:2px;"><rect x="0" y="0" width="8" height="8"/></svg>'), auto;
+    cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" style="fill:white;stroke:%23ff2a4d;stroke-width:2px;"><rect x="0" y="0" width="8" height="8"/></svg>'), auto;
+    background-image: 
+      linear-gradient(rgba(29, 30, 44, 0.5) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(29, 30, 44, 0.5) 1px, transparent 1px);
+    background-size: 32px 32px;
   }
   /* Crisp pixel rendering */
-  img,
-  svg,
-  .pixelated {
+  img, svg, .pixelated {
     image-rendering: pixelated;
     image-rendering: -moz-crisp-edges;
     image-rendering: crisp-edges;
@@ -59,90 +55,137 @@
 }
 
 @layer utilities {
-  /* Premium Pixel Border */
+  /* Premium Pixel Borders con ombreggiature complesse */
   .pixel-border {
     box-shadow: 
-      0 -4px 0 0 var(--color-ink-deep),
-      0 4px 0 0 var(--color-ink-deep),
-      -4px 0 0 0 var(--color-ink-deep),
-      4px 0 0 0 var(--color-ink-deep),
+      0 -2px 0 0 var(--color-ink-deep),
+      0 2px 0 0 var(--color-ink-deep),
+      -2px 0 0 0 var(--color-ink-deep),
+      2px 0 0 0 var(--color-ink-deep),
       0 0 0 2px var(--color-steel);
   }
   
   .pixel-border-red {
     box-shadow: 
-      0 -4px 0 0 var(--color-blood-dark),
-      0 4px 0 0 var(--color-blood-dark),
-      -4px 0 0 0 var(--color-blood-dark),
-      4px 0 0 0 var(--color-blood-dark),
+      0 -2px 0 0 var(--color-blood-dark),
+      0 2px 0 0 var(--color-blood-dark),
+      -2px 0 0 0 var(--color-blood-dark),
+      2px 0 0 0 var(--color-blood-dark),
       0 0 0 2px var(--color-blood);
   }
 
   .pixel-border-gold {
     box-shadow: 
-      0 -4px 0 0 var(--color-gold-dark),
-      0 4px 0 0 var(--color-gold-dark),
-      -4px 0 0 0 var(--color-gold-dark),
-      4px 0 0 0 var(--color-gold-dark),
+      0 -2px 0 0 var(--color-gold-dark),
+      0 2px 0 0 var(--color-gold-dark),
+      -2px 0 0 0 var(--color-gold-dark),
+      2px 0 0 0 var(--color-gold-dark),
       0 0 0 2px var(--color-gold);
   }
 
-  /* Retro raised button effect */
+  .pixel-border-cyan {
+    box-shadow: 
+      0 -2px 0 0 var(--color-cyan-dark),
+      0 2px 0 0 var(--color-cyan-dark),
+      -2px 0 0 0 var(--color-cyan-dark),
+      2px 0 0 0 var(--color-cyan-dark),
+      0 0 0 2px var(--color-cyan);
+  }
+
+  /* Glow Effects */
+  .glow-red {
+    box-shadow: 0 0 15px rgba(255, 42, 77, 0.4);
+  }
+  .glow-gold {
+    box-shadow: 0 0 15px rgba(255, 209, 102, 0.4);
+  }
+
+  /* Retro Button Avanzato */
   .pixel-btn {
     position: relative;
-    background-color: var(--color-blood);
+    padding: 12px 20px;
+    background-color: var(--color-ink-deep);
+    border: 2px solid var(--color-steel);
     color: var(--color-paper);
-    padding: 10px 16px;
-    box-shadow: 
-      inset -4px -4px 0 0 var(--color-blood-dark),
-      inset 4px 4px 0 0 rgba(255,255,255,0.3);
-    transition: transform 80ms steps(2);
+    transition: all 100ms steps(2);
+    overflow: hidden;
+  }
+  
+  .pixel-btn::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: linear-gradient(45deg, transparent, rgba(255,255,255,0.1), transparent);
+    transform: translateX(-100%);
+    transition: transform 300ms;
+  }
+
+  .pixel-btn:hover {
+    background-color: var(--color-steel);
+    color: var(--color-ink-deep);
+  }
+
+  .pixel-btn:hover::before {
+    transform: translateX(100%);
   }
   
   .pixel-btn:active {
-    transform: translate(2px, 2px);
-    box-shadow: 
-      inset 4px 4px 0 0 var(--color-blood-dark);
+    transform: scale(0.96);
   }
 
-  /* Scanline effect */
+  .pixel-btn-primary {
+    background-color: var(--color-blood);
+    border-color: var(--color-blood-dark);
+    color: var(--color-paper);
+    box-shadow: 4px 4px 0 0 var(--color-blood-dark);
+  }
+  
+  .pixel-btn-primary:hover {
+    background-color: #ff4d6d;
+    box-shadow: 2px 2px 0 0 var(--color-blood-dark);
+    transform: translate(2px, 2px);
+  }
+
+  .pixel-btn-primary:active {
+    box-shadow: 0 0 0 0 var(--color-blood-dark);
+    transform: translate(4px, 4px);
+  }
+
+  /* Effetti CRT e HUD */
   .scanlines {
     position: relative;
     overflow: hidden;
   }
   .scanlines::after {
-    content: "";
+    content: " ";
+    display: block;
     position: absolute;
-    top: 0; left: 0; right: 0; bottom: 0;
-    background: linear-gradient(
-      rgba(18, 16, 16, 0) 50%,
-      rgba(0, 0, 0, 0.1) 50%
-    );
-    background-size: 100% 4px;
+    top: 0; left: 0; bottom: 0; right: 0;
+    background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
     z-index: 50;
+    background-size: 100% 2px, 3px 100%;
     pointer-events: none;
   }
 
-  /* CRT Flicker */
-  @keyframes flicker {
-    0% { opacity: 0.98; }
-    5% { opacity: 0.95; }
-    10% { opacity: 0.99; }
-    15% { opacity: 0.94; }
-    20% { opacity: 0.98; }
-    100% { opacity: 1; }
+  /* HUD Glass Effect */
+  .hud-glass {
+    background: rgba(8, 8, 10, 0.85);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1px solid rgba(95, 110, 128, 0.3);
   }
-  .crt-flicker {
-    animation: flicker 0.15s infinite;
+
+  .text-shadow-glow {
+    text-shadow: 0 0 8px currentColor;
   }
 }
 
 /* Animations */
 @keyframes flame-shake {
-  0%, 100% { transform: translate(0, 0); }
-  25% { transform: translate(-2px, -2px); }
-  50% { transform: translate(2px, -4px); }
-  75% { transform: translate(-2px, 2px); }
+  0%, 100% { transform: translate(0, 0) rotate(-2deg); }
+  25% { transform: translate(-1px, -1px) rotate(2deg); }
+  50% { transform: translate(1px, -2px) rotate(-1deg); }
+  75% { transform: translate(-1px, 1px) rotate(1deg); }
 }
 .animate-flame {
   animation: flame-shake 0.8s steps(4) infinite;
@@ -151,28 +194,30 @@
 @keyframes pixel-in {
   0% {
     opacity: 0;
-    transform: translateY(12px);
+    transform: translateY(16px) scale(0.98);
   }
   100% {
     opacity: 1;
-    transform: translateY(0);
+    transform: translateY(0) scale(1);
   }
 }
 .animate-pixel-in {
-  animation: pixel-in 0.4s steps(4) both;
+  animation: pixel-in 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
 @keyframes seg-fill {
-  0% { transform: scaleX(0); }
-  100% { transform: scaleX(1); }
+  0% { transform: scaleX(0); filter: brightness(2); }
+  100% { transform: scaleX(1); filter: brightness(1); }
 }
 .animate-seg {
   transform-origin: left;
-  animation: seg-fill 0.3s steps(5) both;
+  animation: seg-fill 0.4s steps(6) both;
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .animate-flame, .animate-pixel-in, .animate-seg, .crt-flicker {
-    animation: none;
-  }
+@keyframes pulse-glow {
+  0%, 100% { opacity: 1; filter: drop-shadow(0 0 2px currentColor); }
+  50% { opacity: 0.6; filter: drop-shadow(0 0 8px currentColor); }
+}
+.animate-pulse-glow {
+  animation: pulse-glow 2s infinite;
 }
