@@ -1,9 +1,10 @@
 "use client"
 
-import { useMemo, useState, useCallback, memo } from "react"
+import { useMemo, memo } from "react"
 import { ArrowLeft } from "lucide-react"
 import { TaskCard } from "@/components/task-card"
-import type { Trame, Task } from "@/lib/game-data"
+import type { Trame } from "@/lib/game-data"
+import { useGame } from "@/lib/store"
 
 const themeColor: Record<Trame["theme"], string> = {
   blood: "var(--color-blood)",
@@ -19,12 +20,15 @@ export const TrameDetail = memo(function TrameDetail({
   onBack: () => void
 }) {
   const accent = themeColor[trame.theme]
-  const [tasks, setTasks] = useState<Task[]>(trame.tasks)
+  const { trame: allTrame, toggleTrameTask } = useGame()
+  
+  // Get the current version of this trame from the store
+  const currentTrame = useMemo(() => 
+    allTrame.find(t => t.id === trame.id) || trame, 
+    [allTrame, trame.id, trame]
+  )
 
-  const toggle = useCallback((id: number) =>
-    setTasks((prev) =>
-      prev.map((t) => (t.id === id ? { ...t, completed: !t.completed } : t)),
-    ), [])
+  const tasks = currentTrame.tasks
 
   const { done, total, earned } = useMemo(() => {
     const completed = tasks.filter((t) => t.completed)
@@ -59,11 +63,11 @@ export const TrameDetail = memo(function TrameDetail({
             aria-hidden="true"
           />
           <h1 className="text-[14px] leading-relaxed md:text-[20px]" style={{ color: accent }}>
-            {trame.title}
+            {currentTrame.title}
           </h1>
         </div>
         <p className="mt-3 text-[8px] leading-relaxed text-steel md:text-[10px]">
-          {trame.description}
+          {currentTrame.description}
         </p>
 
         {/* Progress */}
@@ -88,7 +92,7 @@ export const TrameDetail = memo(function TrameDetail({
             {percent}% COMPLETA
           </span>
           <span className="text-[8px] text-steel md:text-[9px]">
-            {earned} / {trame.xpReward} XP
+            {earned} / {currentTrame.xpReward} XP
           </span>
         </div>
       </div>
@@ -97,7 +101,7 @@ export const TrameDetail = memo(function TrameDetail({
       <div className="animate-pixel-in bg-[var(--color-ink-deep)] p-3 pixel-border" style={{ animationDelay: "60ms" }}>
         <p className="text-[7px] text-steel md:text-[8px]">{"// PROSSIMA TAPPA"}</p>
         <p className="mt-2 text-[9px] leading-relaxed text-paper md:text-[10px]">
-          {trame.nextMilestone}
+          {currentTrame.nextMilestone}
         </p>
       </div>
 
@@ -120,7 +124,7 @@ export const TrameDetail = memo(function TrameDetail({
 
         <div className="grid grid-cols-2 gap-3 md:grid-cols-3 xl:grid-cols-4">
           {tasks.map((task) => (
-            <TaskCard key={task.id} task={task} onToggle={toggle} />
+            <TaskCard key={task.id} task={task} onToggle={(taskId) => toggleTrameTask(currentTrame.id, taskId)} />
           ))}
         </div>
       </section>

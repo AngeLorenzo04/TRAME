@@ -1,6 +1,7 @@
 "use client"
 
-import { useMemo, useState, useCallback, memo } from "react"
+import { useMemo, useCallback, memo } from "react"
+import { BrowserRouter, Routes, Route, useNavigate, useParams, Navigate, useLocation } from "react-router-dom"
 import { Flame, Map, Award, Trophy } from "lucide-react"
 import { Sidebar, type NavKey } from "@/components/sidebar"
 import { Header } from "@/components/header"
@@ -10,7 +11,8 @@ import { TrameCard } from "@/components/trame-card"
 import { TrameDetail } from "@/components/trame-detail"
 import { StreakCounter } from "@/components/streak-counter"
 import { StatsCard } from "@/components/stats-card"
-import { user, initialTasks, quickStats, trame, type Task } from "@/lib/game-data"
+import { quickStats, trame } from "@/lib/game-data"
+import { useGame } from "@/lib/store"
 
 const SectionTitle = memo(function SectionTitle({
   children,
@@ -51,13 +53,9 @@ const TrameGrid = memo(function TrameGrid({ onOpen }: { onOpen?: (id: number) =>
   )
 })
 
-function DashboardView({ onOpenTrame }: { onOpenTrame: (id: number) => void }) {
-  const [tasks, setTasks] = useState<Task[]>(initialTasks)
-
-  const toggle = useCallback((id: number) =>
-    setTasks((prev) =>
-      prev.map((t) => (t.id === id ? { ...t, completed: !t.completed } : t)),
-    ), [])
+function DashboardView() {
+  const { user, tasks, toggleTask } = useGame()
+  const navigate = useNavigate()
 
   const { done, total, earned } = useMemo(() => {
     const completed = tasks.filter((t) => t.completed)
@@ -117,7 +115,7 @@ function DashboardView({ onOpenTrame }: { onOpenTrame: (id: number) => void }) {
 
           <div className="grid grid-cols-2 gap-3 md:grid-cols-3">
             {tasks.map((task) => (
-              <TaskCard key={task.id} task={task} onToggle={toggle} />
+              <TaskCard key={task.id} task={task} onToggle={toggleTask} />
             ))}
           </div>
         </section>
@@ -128,7 +126,7 @@ function DashboardView({ onOpenTrame }: { onOpenTrame: (id: number) => void }) {
         <SectionTitle hint="Quest a lungo termine che intrecciano le tue abitudini" count={trame.length}>
           TRAME ATTIVE
         </SectionTitle>
-        <TrameGrid onOpen={onOpenTrame} />
+        <TrameGrid onOpen={(id) => navigate(`/trame/${id}`)} />
       </section>
 
       {/* Quick stats */}
@@ -145,7 +143,8 @@ function DashboardView({ onOpenTrame }: { onOpenTrame: (id: number) => void }) {
   )
 }
 
-const TrameView = memo(function TrameView({ onOpenTrame }: { onOpenTrame: (id: number) => void }) {
+const TrameView = memo(function TrameView() {
+  const navigate = useNavigate()
   return (
     <div className="flex flex-col gap-6">
       <div className="animate-pixel-in bg-[var(--color-ink)] p-4 pixel-border md:p-5">
@@ -156,11 +155,21 @@ const TrameView = memo(function TrameView({ onOpenTrame }: { onOpenTrame: (id: n
       </div>
       <section>
         <SectionTitle count={trame.length}>IN CORSO</SectionTitle>
-        <TrameGrid onOpen={onOpenTrame} />
+        <TrameGrid onOpen={(id) => navigate(`/trame/${id}`)} />
       </section>
     </div>
   )
 })
+
+const TrameDetailWrapper = () => {
+  const { id } = useParams()
+  const navigate = useNavigate()
+  const selectedTrame = useMemo(() => trame.find((t) => t.id === Number(id)) ?? null, [id])
+
+  if (!selectedTrame) return <Navigate to="/trame" replace />
+
+  return <TrameDetail trame={selectedTrame} onBack={() => navigate("/trame")} />
+}
 
 const Placeholder = memo(function Placeholder({ title }: { title: string }) {
   return (
@@ -175,37 +184,42 @@ const Placeholder = memo(function Placeholder({ title }: { title: string }) {
   )
 })
 
-export function Dashboard() {
-  const [active, setActive] = useState<NavKey>("dashboard")
-  const [openTrameId, setOpenTrameId] = useState<number | null>(null)
-
-  const selectedTrame = useMemo(() => trame.find((t) => t.id === openTrameId) ?? null, [openTrameId])
+function DashboardContent() {
+  const navigate = useNavigate()
+  const location = useLocation()
+  
+  const active = useMemo(() => {
+    const path = location.pathname.split("/")[1]
+    return (path || "dashboard") as NavKey
+  }, [location])
 
   const handleSelect = useCallback((key: NavKey) => {
-    setOpenTrameId(null)
-    setActive(key)
-  }, [])
-
-  const handleOpenTrame = useCallback((id: number) => setOpenTrameId(id), [])
-  const handleBack = useCallback(() => setOpenTrameId(null), [])
+    navigate(`/${key === "dashboard" ? "" : key}`)
+  }, [navigate])
 
   return (
     <main className="flex min-h-screen gap-4 bg-background p-3 md:gap-6 md:p-6">
       <Sidebar active={active} onSelect={handleSelect} />
 
       <div className="min-w-0 flex-1">
-        {selectedTrame ? (
-          <TrameDetail trame={selectedTrame} onBack={handleBack} />
-        ) : (
-          <>
-            {active === "dashboard" && <DashboardView onOpenTrame={handleOpenTrame} />}
-            {active === "trame" && <TrameView onOpenTrame={handleOpenTrame} />}
-            {active === "task" && <Placeholder title="TASK" />}
-            {active === "profilo" && <Placeholder title="PROFILO" />}
-            {active === "settings" && <Placeholder title="SETTINGS" />}
-          </>
-        )}
+        <Routes>
+          <Route path="/" element={<DashboardView />} />
+          <Route path="/trame" element={<TrameView />} />
+          <Route path="/trame/:id" element={<TrameDetailWrapper />} />
+          <Route path="/task" element={<Placeholder title="TASK" />} />
+          <Route path="/profilo" element={<Placeholder title="PROFILO" />} />
+          <Route path="/settings" element={<Placeholder title="SETTINGS" />} />
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
       </div>
     </main>
+  )
+}
+
+export function Dashboard() {
+  return (
+    <BrowserRouter>
+      <DashboardContent />
+    </BrowserRouter>
   )
 }
