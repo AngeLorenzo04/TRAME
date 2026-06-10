@@ -1,6 +1,6 @@
 "use client"
-
 import { memo } from "react"
+
 import { Home, Map, ListChecks, User, Settings } from "lucide-react"
 import { cn } from "@/lib/utils"
 
@@ -58,4 +58,5 @@ export const Sidebar = memo(function Sidebar({
       </nav>
     </aside>
   )
+}
 })

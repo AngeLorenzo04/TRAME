@@ -1,3 +1,5 @@
+"use client"
+
 import { memo } from "react"
 import { XPBar } from "@/components/xp-bar"
 
