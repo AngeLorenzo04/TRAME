@@ -2,7 +2,7 @@
 
 import { memo } from "react"
 import { Flame, Check } from "lucide-react"
-import type { Task } from "@/lib/game-data"
+import type { Task } from "@/domains/core/game-data"
 import { cn } from "@/lib/utils"
 
 export const TaskCard = memo(function TaskCard({

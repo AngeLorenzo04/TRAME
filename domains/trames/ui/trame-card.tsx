@@ -1,7 +1,7 @@
 "use client"
 import { memo } from "react"
 import { ChevronRight, Target } from "lucide-react"
-import type { Trame } from "@/lib/game-data"
+import type { Trame } from "@/domains/core/game-data"
 import { cn } from "@/lib/utils"
 
 const themeStyles: Record<Trame["theme"], { border: string; accent: string }> = {

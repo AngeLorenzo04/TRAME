@@ -1,6 +1,6 @@
 "use client"
 import { memo } from "react"
-import { XPBar } from "@/components/xp-bar"
+import { XPBar } from "@/domains/rpg/ui/xp-bar"
 
 export const Header = memo(function Header({
   xp,

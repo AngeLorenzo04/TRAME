@@ -2,9 +2,9 @@
 
 import { useMemo, memo } from "react"
 import { ArrowLeft } from "lucide-react"
-import { TaskCard } from "@/components/task-card"
-import type { Trame } from "@/lib/game-data"
-import { useGame } from "@/lib/store"
+import { TaskCard } from "@/domains/tasks/ui/task-card"
+import type { Trame } from "@/domains/core/game-data"
+import { useGame } from "@/domains/core/store"
 
 const themeColor: Record<Trame["theme"], string> = {
   blood: "var(--color-blood)",
