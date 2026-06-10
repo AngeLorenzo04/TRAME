@@ -58,5 +58,4 @@ export const Sidebar = memo(function Sidebar({
       </nav>
     </aside>
   )
-}
 })
