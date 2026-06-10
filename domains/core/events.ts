@@ -1,5 +1,5 @@
 type EventType = 
-  | { type: "TASK_TOGGLED"; payload: { taskId: number; completed: boolean; xpReward: number; category: string } }
+  | { type: "TASK_TOGGLED"; payload: { taskId: string | number; completed: boolean; xpReward: number; category: string } }
   | { type: "TRAME_TASK_TOGGLED"; payload: { trameId: number; taskId: number; completed: boolean; xpReward: number } }
   | { type: "LEVEL_UP"; payload: { newLevel: number } }
 
@@ -10,7 +10,9 @@ class EventBus {
 
   subscribe(handler: Handler) {
     this.handlers.add(handler)
-    return () => this.handlers.delete(handler)
+    return () => {
+      this.handlers.delete(handler)
+    }
   }
 
   emit(event: EventType) {

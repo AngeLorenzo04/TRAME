@@ -1,7 +1,7 @@
-import { create } from "zustand"
+import { create, StateCreator } from "zustand"
 import { persist, createJSONStorage } from "zustand/middleware"
 import { user as initialUser, trame as initialTrame, quickStats as initialStats } from "./game-data"
-import type { UserData, Trame, QuickStats } from "./game-data"
+import type { UserData, Trame, QuickStats, Task } from "./game-data"
 import { eventBus } from "./events"
 import { createTaskSlice, TaskSlice } from "@/domains/tasks/store"
 import { createAuthSlice, AuthSlice } from "@/domains/auth/store/auth-slice"
@@ -20,7 +20,7 @@ interface CharacterSlice {
 
 type GameState = TaskSlice & TrameSlice & CharacterSlice & AuthSlice
 
-const createTrameSlice = (set, get) => ({
+const createTrameSlice: StateCreator<GameState, [["zustand/persist", unknown]], [], TrameSlice> = (set, get) => ({
   trame: initialTrame,
   toggleTrameTask: (trameId, taskId) => {
     const trameItem = get().trame.find((t) => t.id === trameId)
@@ -45,7 +45,7 @@ const createTrameSlice = (set, get) => ({
   },
 })
 
-const createCharacterSlice = (set) => ({
+const createCharacterSlice: StateCreator<GameState, [["zustand/persist", unknown]], [], CharacterSlice> = (set) => ({
   user: initialUser,
   quickStats: initialStats,
   addXP: (amount) => set((state) => ({ user: { ...state.user, xp: state.user.xp + amount } })),
@@ -55,8 +55,8 @@ export const useGameStore = create<GameState>()(
   persist(
     (set, get, store) => ({
       ...createTaskSlice(set, get, store),
-      ...createTrameSlice(set, get),
-      ...createCharacterSlice(set),
+      ...createTrameSlice(set, get, store),
+      ...createCharacterSlice(set, get, store),
       ...createAuthSlice(set, get, store),
     }),
     {
@@ -69,7 +69,7 @@ export const useGameStore = create<GameState>()(
 // Global session listener
 if (typeof window !== "undefined") {
   // Sync Supabase Auth with Zustand
-  supabase?.auth?.onAuthStateChange((_event, session) => {
+  supabase?.auth?.onAuthStateChange((_event: any, session: any) => {
     useGameStore.getState().setSessionUser(session?.user ?? null)
   })
 
