@@ -7,10 +7,12 @@ import { Sidebar, type NavKey } from "@/domains/core/ui/sidebar"
 import { Header } from "@/domains/rpg/ui/header"
 import { AvatarDisplay } from "@/domains/rpg/ui/avatar-display"
 import { TaskCard } from "@/domains/tasks/ui/task-card"
+import { TaskTerminal } from "@/domains/tasks/ui/task-terminal"
 import { TrameCard } from "@/domains/trames/ui/trame-card"
 import { TrameDetail } from "@/domains/trames/ui/trame-detail"
 import { StreakCounter } from "@/domains/rpg/ui/streak-counter"
 import { StatsCard } from "@/domains/rpg/ui/stats-card"
+import { ToastSystem } from "@/domains/core/ui/toast-system"
 import { quickStats, trame } from "@/domains/core/game-data"
 import { useGame } from "@/domains/core/store"
 
@@ -211,13 +213,14 @@ function DashboardContent() {
   return (
     <main className="flex min-h-screen gap-6 bg-background p-4 md:gap-8 md:p-8 cursor-default">
       <Sidebar active={active} onSelect={handleSelect} />
+      <ToastSystem />
 
       <div className="min-w-0 flex-1 overflow-y-auto">
         <Routes>
           <Route path="/" element={<DashboardView />} />
           <Route path="/trame" element={<TrameView />} />
           <Route path="/trame/:id" element={<TrameDetailWrapper />} />
-          <Route path="/task" element={<Placeholder title="TASK TERMINAL" subtitle="// ACCESS DENIED: COMPLETE MORE QUESTS" />} />
+          <Route path="/task" element={<TaskTerminal />} />
           <Route path="/profilo" element={<Placeholder title="PILOT PROFILE" subtitle="// LOADING BIOMETRIC DATA..." />} />
           <Route path="/settings" element={<Placeholder title="SYSTEM CONFIG" subtitle="// HARDWARE INTERFACE OFFLINE" />} />
           <Route path="*" element={<Navigate to="/" replace />} />

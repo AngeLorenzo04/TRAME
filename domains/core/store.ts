@@ -1,4 +1,5 @@
 import { create } from "zustand"
+import { persist, createJSONStorage } from "zustand/middleware"
 import { user as initialUser, trame as initialTrame, quickStats as initialStats } from "./game-data"
 import type { UserData, Trame, QuickStats } from "./game-data"
 import { eventBus } from "./events"
@@ -43,12 +44,8 @@ const createTrameSlice = (set, get) => ({
 })
 
 const createCharacterSlice = (set, get) => {
-  eventBus.subscribe((event) => {
-    if (event.type === "TASK_TOGGLED" || event.type === "TRAME_TASK_TOGGLED") {
-      const { completed, xpReward } = event.payload
-      get().addXP(completed ? xpReward : -xpReward)
-    }
-  })
+  // We only subscribe once. Zustand's create handles this if called inside.
+  // Note: Subscription should ideally be outside or handled carefully to avoid duplicates.
   return {
     user: initialUser,
     quickStats: initialStats,
@@ -56,11 +53,30 @@ const createCharacterSlice = (set, get) => {
   }
 }
 
-export const useGameStore = create((set, get, store) => ({
-  ...createTaskSlice(set, get, store),
-  ...createTrameSlice(set, get),
-  ...createCharacterSlice(set, get),
-}))
+export const useGameStore = create<GameState>()(
+  persist(
+    (set, get, store) => ({
+      ...createTaskSlice(set, get, store),
+      ...createTrameSlice(set, get),
+      ...createCharacterSlice(set, get),
+    }),
+    {
+      name: "pixel-habit-storage",
+      storage: createJSONStorage(() => localStorage),
+    }
+  )
+)
+
+// Global event subscription to avoid duplicates during re-renders/hot-reloads
+if (typeof window !== "undefined") {
+  eventBus.subscribe((event) => {
+    const store = useGameStore.getState()
+    if (event.type === "TASK_TOGGLED" || event.type === "TRAME_TASK_TOGGLED") {
+      const { completed, xpReward } = event.payload
+      store.addXP(completed ? xpReward : -xpReward)
+    }
+  })
+}
 
 export const useGame = () => {
   const store = useGameStore()
