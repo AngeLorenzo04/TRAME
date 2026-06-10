@@ -5,26 +5,29 @@
   --font-sans: var(--font-pixel-base), monospace;
   --font-mono: var(--font-pixel-base), monospace;
 
-  /* Pixel palette */
-  --color-ink: #2b2d42;
-  --color-ink-deep: #1a1c28;
-  --color-steel: #8d99ae;
-  --color-paper: #edf2f4;
-  --color-blood: #ef233c;
-  --color-blood-dark: #d90429;
-  --color-gold: #f4a259;
+  /* Pixel palette - Vibrance Up */
+  --color-ink: #1d1e2c;
+  --color-ink-deep: #0f101a;
+  --color-steel: #7d8ea3;
+  --color-paper: #f8f9fa;
+  --color-blood: #ff2a4d;
+  --color-blood-dark: #c1121f;
+  --color-gold: #ffb703;
+  --color-gold-dark: #fb8500;
+  --color-cyan: #219ebc;
+  --color-blue: #023e8a;
 
-  --color-background: #2b2d42;
-  --color-foreground: #edf2f4;
-  --color-card: #1a1c28;
-  --color-card-foreground: #edf2f4;
-  --color-border: #8d99ae;
-  --color-primary: #ef233c;
-  --color-primary-foreground: #edf2f4;
-  --color-muted: #8d99ae;
-  --color-muted-foreground: #8d99ae;
-  --color-accent: #d90429;
-  --color-accent-foreground: #edf2f4;
+  --color-background: var(--color-ink);
+  --color-foreground: var(--color-paper);
+  --color-card: var(--color-ink-deep);
+  --color-card-foreground: var(--color-paper);
+  --color-border: var(--color-steel);
+  --color-primary: var(--color-blood);
+  --color-primary-foreground: var(--color-paper);
+  --color-muted: var(--color-steel);
+  --color-muted-foreground: var(--color-steel);
+  --color-accent: var(--color-gold);
+  --color-accent-foreground: var(--color-ink-deep);
 
   --radius-sm: 0px;
   --radius-md: 0px;
@@ -43,6 +46,7 @@
     color: var(--color-foreground);
     -webkit-font-smoothing: none;
     -moz-osx-font-smoothing: grayscale;
+    cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" style="fill:white;stroke:black;stroke-width:2px;"><rect x="0" y="0" width="8" height="8"/></svg>'), auto;
   }
   /* Crisp pixel rendering */
   img,
@@ -55,120 +59,120 @@
 }
 
 @layer utilities {
-  /* Hard, chunky pixel border via box-shadow steps */
+  /* Premium Pixel Border */
   .pixel-border {
-    box-shadow:
+    box-shadow: 
+      0 -4px 0 0 var(--color-ink-deep),
+      0 4px 0 0 var(--color-ink-deep),
+      -4px 0 0 0 var(--color-ink-deep),
+      4px 0 0 0 var(--color-ink-deep),
       0 0 0 2px var(--color-steel);
   }
+  
   .pixel-border-red {
-    box-shadow:
+    box-shadow: 
+      0 -4px 0 0 var(--color-blood-dark),
+      0 4px 0 0 var(--color-blood-dark),
+      -4px 0 0 0 var(--color-blood-dark),
+      4px 0 0 0 var(--color-blood-dark),
       0 0 0 2px var(--color-blood);
   }
+
+  .pixel-border-gold {
+    box-shadow: 
+      0 -4px 0 0 var(--color-gold-dark),
+      0 4px 0 0 var(--color-gold-dark),
+      -4px 0 0 0 var(--color-gold-dark),
+      4px 0 0 0 var(--color-gold-dark),
+      0 0 0 2px var(--color-gold);
+  }
+
   /* Retro raised button effect */
   .pixel-btn {
-    box-shadow:
-      0 0 0 2px var(--color-blood),
-      4px 4px 0 0 var(--color-blood-dark);
-    transition: transform 80ms steps(2), box-shadow 80ms steps(2);
-  }
-  .pixel-btn:hover {
+    position: relative;
     background-color: var(--color-blood);
     color: var(--color-paper);
+    padding: 10px 16px;
+    box-shadow: 
+      inset -4px -4px 0 0 var(--color-blood-dark),
+      inset 4px 4px 0 0 rgba(255,255,255,0.3);
+    transition: transform 80ms steps(2);
   }
+  
   .pixel-btn:active {
     transform: translate(2px, 2px);
-    box-shadow:
-      0 0 0 2px var(--color-blood),
-      2px 2px 0 0 var(--color-blood-dark);
+    box-shadow: 
+      inset 4px 4px 0 0 var(--color-blood-dark);
+  }
+
+  /* Scanline effect */
+  .scanlines {
+    position: relative;
+    overflow: hidden;
+  }
+  .scanlines::after {
+    content: "";
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: linear-gradient(
+      rgba(18, 16, 16, 0) 50%,
+      rgba(0, 0, 0, 0.1) 50%
+    );
+    background-size: 100% 4px;
+    z-index: 50;
+    pointer-events: none;
+  }
+
+  /* CRT Flicker */
+  @keyframes flicker {
+    0% { opacity: 0.98; }
+    5% { opacity: 0.95; }
+    10% { opacity: 0.99; }
+    15% { opacity: 0.94; }
+    20% { opacity: 0.98; }
+    100% { opacity: 1; }
+  }
+  .crt-flicker {
+    animation: flicker 0.15s infinite;
   }
 }
 
-/* Flame shake animation */
+/* Animations */
 @keyframes flame-shake {
-  0%,
-  100% {
-    transform: translate(0, 0) rotate(0deg);
-  }
-  25% {
-    transform: translate(-1px, -1px) rotate(-3deg);
-  }
-  50% {
-    transform: translate(1px, -2px) rotate(2deg);
-  }
-  75% {
-    transform: translate(-1px, 1px) rotate(-2deg);
-  }
+  0%, 100% { transform: translate(0, 0); }
+  25% { transform: translate(-2px, -2px); }
+  50% { transform: translate(2px, -4px); }
+  75% { transform: translate(-2px, 2px); }
 }
 .animate-flame {
-  animation: flame-shake 1s steps(4) infinite;
+  animation: flame-shake 0.8s steps(4) infinite;
 }
 
-/* XP bar shimmer-free decay pulse */
-@keyframes decay-pulse {
-  0%,
-  100% {
-    opacity: 1;
-  }
-  50% {
-    opacity: 0.65;
-  }
-}
-.animate-decay {
-  animation: decay-pulse 2s steps(2) infinite;
-}
-
-/* Pixel pop-in entrance (chunky, stepped) */
 @keyframes pixel-in {
   0% {
     opacity: 0;
-    transform: translateY(8px) scale(0.96);
+    transform: translateY(12px);
   }
   100% {
     opacity: 1;
-    transform: translateY(0) scale(1);
+    transform: translateY(0);
   }
 }
 .animate-pixel-in {
-  animation: pixel-in 320ms steps(4) both;
+  animation: pixel-in 0.4s steps(4) both;
 }
 
-/* Progress segment fill blink */
 @keyframes seg-fill {
-  0% {
-    opacity: 0;
-    transform: scaleY(0.4);
-  }
-  100% {
-    opacity: 1;
-    transform: scaleY(1);
-  }
+  0% { transform: scaleX(0); }
+  100% { transform: scaleX(1); }
 }
 .animate-seg {
-  transform-origin: bottom;
-  animation: seg-fill 240ms steps(3) both;
-}
-
-/* Slow blinking caret/marker */
-@keyframes blink {
-  0%,
-  60% {
-    opacity: 1;
-  }
-  61%,
-  100% {
-    opacity: 0;
-  }
-}
-.animate-blink {
-  animation: blink 1s steps(1) infinite;
+  transform-origin: left;
+  animation: seg-fill 0.3s steps(5) both;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .animate-flame,
-  .animate-decay,
-  .animate-pixel-in,
-  .animate-seg,
-  .animate-blink {
+  .animate-flame, .animate-pixel-in, .animate-seg, .crt-flicker {
     animation: none;
   }
 }
