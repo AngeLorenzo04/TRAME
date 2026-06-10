@@ -1,6 +1,7 @@
+import { memo } from "react"
 import { XPBar } from "@/components/xp-bar"
 
-export function Header({
+export const Header = memo(function Header({
   xp,
   decay,
   level,
@@ -24,4 +25,4 @@ export function Header({
       </div>
     </header>
   )
-}
+})

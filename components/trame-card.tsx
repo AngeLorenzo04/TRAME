@@ -1,5 +1,6 @@
 "use client"
 
+import { memo } from "react"
 import { ChevronRight } from "lucide-react"
 import type { Trame } from "@/lib/game-data"
 import { cn } from "@/lib/utils"
@@ -10,7 +11,7 @@ const themeColor: Record<Trame["theme"], string> = {
   energy: "var(--color-gold)",
 }
 
-export function TrameCard({
+export const TrameCard = memo(function TrameCard({
   trame,
   index = 0,
   onOpen,
@@ -37,10 +38,10 @@ export function TrameCard({
       }}
       className={cn(
         "group flex flex-col gap-3 bg-[var(--color-ink-deep)] p-4 pixel-border",
-        "animate-pixel-in transition-transform duration-100 hover:-translate-y-1 hover:pixel-border-red",
+        "animate-pixel-in transition-transform duration-100 will-change-transform hover:-translate-y-1 hover:pixel-border-red",
         onOpen && "cursor-pointer",
       )}
-      style={{ animationDelay: `${index * 90}ms` }}
+      style={{ animationDelay: `${index * 60}ms` }}
     >
       {/* Title row */}
       <div className="flex items-start justify-between gap-2">
@@ -73,7 +74,7 @@ export function TrameCard({
               className={cn("h-3 flex-1", isFilled && "animate-seg")}
               style={{
                 backgroundColor: isFilled ? accent : "var(--color-ink-deep)",
-                animationDelay: isFilled ? `${index * 90 + i * 40}ms` : undefined,
+                animationDelay: isFilled ? `${index * 60 + i * 30}ms` : undefined,
               }}
               aria-hidden="true"
             />
@@ -111,4 +112,4 @@ export function TrameCard({
       )}
     </article>
   )
-}
+})

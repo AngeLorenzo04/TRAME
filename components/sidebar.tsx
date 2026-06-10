@@ -1,5 +1,6 @@
 "use client"
 
+import { memo } from "react"
 import { Home, Map, ListChecks, User, Settings } from "lucide-react"
 import { cn } from "@/lib/utils"
 
@@ -13,7 +14,7 @@ const items: { key: NavKey; label: string; icon: typeof Home }[] = [
   { key: "settings", label: "Settings", icon: Settings },
 ]
 
-export function Sidebar({
+export const Sidebar = memo(function Sidebar({
   active,
   onSelect,
 }: {
@@ -57,4 +58,4 @@ export function Sidebar({
       </nav>
     </aside>
   )
-}
+})

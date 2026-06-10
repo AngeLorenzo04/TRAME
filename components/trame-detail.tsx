@@ -1,6 +1,6 @@
 "use client"
 
-import { useMemo, useState } from "react"
+import { useMemo, useState, useCallback, memo } from "react"
 import { ArrowLeft } from "lucide-react"
 import { TaskCard } from "@/components/task-card"
 import type { Trame, Task } from "@/lib/game-data"
@@ -11,7 +11,7 @@ const themeColor: Record<Trame["theme"], string> = {
   energy: "var(--color-gold)",
 }
 
-export function TrameDetail({
+export const TrameDetail = memo(function TrameDetail({
   trame,
   onBack,
 }: {
@@ -21,10 +21,10 @@ export function TrameDetail({
   const accent = themeColor[trame.theme]
   const [tasks, setTasks] = useState<Task[]>(trame.tasks)
 
-  const toggle = (id: number) =>
+  const toggle = useCallback((id: number) =>
     setTasks((prev) =>
       prev.map((t) => (t.id === id ? { ...t, completed: !t.completed } : t)),
-    )
+    ), [])
 
   const { done, total, earned } = useMemo(() => {
     const completed = tasks.filter((t) => t.completed)
@@ -126,4 +126,4 @@ export function TrameDetail({
       </section>
     </div>
   )
-}
+})

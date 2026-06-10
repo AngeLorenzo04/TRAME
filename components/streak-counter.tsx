@@ -1,6 +1,7 @@
+import { memo } from "react"
 import { Flame } from "lucide-react"
 
-export function StreakCounter({ days }: { days: number }) {
+export const StreakCounter = memo(function StreakCounter({ days }: { days: number }) {
   return (
     <div className="flex flex-col items-center justify-center gap-3 bg-[var(--color-ink-deep)] p-5 pixel-border">
       <Flame
@@ -16,4 +17,4 @@ export function StreakCounter({ days }: { days: number }) {
       </p>
     </div>
   )
-}
+})

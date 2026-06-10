@@ -1,6 +1,7 @@
+import { memo } from "react"
 import Image from "next/image"
 
-export function AvatarDisplay({ stats }: { stats: string[] }) {
+export const AvatarDisplay = memo(function AvatarDisplay({ stats }: { stats: string[] }) {
   return (
     <div className="flex flex-col items-center gap-3 bg-[var(--color-ink-deep)] p-4 pixel-border-red">
       <div className="bg-[var(--color-ink)] p-1 pixel-border">
@@ -18,4 +19,4 @@ export function AvatarDisplay({ stats }: { stats: string[] }) {
       </p>
     </div>
   )
-}
+})

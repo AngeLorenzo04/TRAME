@@ -1,10 +1,11 @@
 "use client"
 
+import { memo } from "react"
 import { Flame, Check } from "lucide-react"
 import type { Task } from "@/lib/game-data"
 import { cn } from "@/lib/utils"
 
-export function TaskCard({
+export const TaskCard = memo(function TaskCard({
   task,
   onToggle,
 }: {
@@ -16,7 +17,7 @@ export function TaskCard({
       onClick={() => onToggle(task.id)}
       aria-pressed={task.completed}
       className={cn(
-        "group flex flex-col gap-3 p-3 text-left transition-transform duration-100",
+        "group flex flex-col gap-3 p-3 text-left transition-transform duration-100 will-change-transform",
         "hover:scale-[1.03] active:scale-[0.96]",
         task.completed
           ? "bg-[var(--color-blood)] text-paper pixel-border-red"
@@ -60,4 +61,4 @@ export function TaskCard({
       </span>
     </button>
   )
-}
+})

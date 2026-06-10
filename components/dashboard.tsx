@@ -1,6 +1,6 @@
 "use client"
 
-import { useMemo, useState } from "react"
+import { useMemo, useState, useCallback, memo } from "react"
 import { Flame, Map, Award, Trophy } from "lucide-react"
 import { Sidebar, type NavKey } from "@/components/sidebar"
 import { Header } from "@/components/header"
@@ -12,7 +12,7 @@ import { StreakCounter } from "@/components/streak-counter"
 import { StatsCard } from "@/components/stats-card"
 import { user, initialTasks, quickStats, trame, type Task } from "@/lib/game-data"
 
-function SectionTitle({
+const SectionTitle = memo(function SectionTitle({
   children,
   hint,
   count,
@@ -39,9 +39,9 @@ function SectionTitle({
       )}
     </div>
   )
-}
+})
 
-function TrameGrid({ onOpen }: { onOpen?: (id: number) => void }) {
+const TrameGrid = memo(function TrameGrid({ onOpen }: { onOpen?: (id: number) => void }) {
   return (
     <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
       {trame.map((t, i) => (
@@ -49,15 +49,15 @@ function TrameGrid({ onOpen }: { onOpen?: (id: number) => void }) {
       ))}
     </div>
   )
-}
+})
 
 function DashboardView({ onOpenTrame }: { onOpenTrame: (id: number) => void }) {
   const [tasks, setTasks] = useState<Task[]>(initialTasks)
 
-  const toggle = (id: number) =>
+  const toggle = useCallback((id: number) =>
     setTasks((prev) =>
       prev.map((t) => (t.id === id ? { ...t, completed: !t.completed } : t)),
-    )
+    ), [])
 
   const { done, total, earned } = useMemo(() => {
     const completed = tasks.filter((t) => t.completed)
@@ -68,7 +68,7 @@ function DashboardView({ onOpenTrame }: { onOpenTrame: (id: number) => void }) {
     }
   }, [tasks])
 
-  const statList = ["Atletico", "Riposato", "Focus"]
+  const statList = useMemo(() => ["Atletico", "Riposato", "Focus"], [])
 
   return (
     <div className="flex flex-col gap-8">
@@ -145,7 +145,7 @@ function DashboardView({ onOpenTrame }: { onOpenTrame: (id: number) => void }) {
   )
 }
 
-function TrameView({ onOpenTrame }: { onOpenTrame: (id: number) => void }) {
+const TrameView = memo(function TrameView({ onOpenTrame }: { onOpenTrame: (id: number) => void }) {
   return (
     <div className="flex flex-col gap-6">
       <div className="animate-pixel-in bg-[var(--color-ink)] p-4 pixel-border md:p-5">
@@ -160,9 +160,9 @@ function TrameView({ onOpenTrame }: { onOpenTrame: (id: number) => void }) {
       </section>
     </div>
   )
-}
+})
 
-function Placeholder({ title }: { title: string }) {
+const Placeholder = memo(function Placeholder({ title }: { title: string }) {
   return (
     <div className="grid min-h-[60vh] animate-pixel-in place-items-center bg-[var(--color-ink-deep)] p-8 pixel-border">
       <div className="flex flex-col items-center gap-4 text-center">
@@ -173,18 +173,21 @@ function Placeholder({ title }: { title: string }) {
       </div>
     </div>
   )
-}
+})
 
 export function Dashboard() {
   const [active, setActive] = useState<NavKey>("dashboard")
   const [openTrameId, setOpenTrameId] = useState<number | null>(null)
 
-  const selectedTrame = trame.find((t) => t.id === openTrameId) ?? null
+  const selectedTrame = useMemo(() => trame.find((t) => t.id === openTrameId) ?? null, [openTrameId])
 
-  const handleSelect = (key: NavKey) => {
+  const handleSelect = useCallback((key: NavKey) => {
     setOpenTrameId(null)
     setActive(key)
-  }
+  }, [])
+
+  const handleOpenTrame = useCallback((id: number) => setOpenTrameId(id), [])
+  const handleBack = useCallback(() => setOpenTrameId(null), [])
 
   return (
     <main className="flex min-h-screen gap-4 bg-background p-3 md:gap-6 md:p-6">
@@ -192,11 +195,11 @@ export function Dashboard() {
 
       <div className="min-w-0 flex-1">
         {selectedTrame ? (
-          <TrameDetail trame={selectedTrame} onBack={() => setOpenTrameId(null)} />
+          <TrameDetail trame={selectedTrame} onBack={handleBack} />
         ) : (
           <>
-            {active === "dashboard" && <DashboardView onOpenTrame={setOpenTrameId} />}
-            {active === "trame" && <TrameView onOpenTrame={setOpenTrameId} />}
+            {active === "dashboard" && <DashboardView onOpenTrame={handleOpenTrame} />}
+            {active === "trame" && <TrameView onOpenTrame={handleOpenTrame} />}
             {active === "task" && <Placeholder title="TASK" />}
             {active === "profilo" && <Placeholder title="PROFILO" />}
             {active === "settings" && <Placeholder title="SETTINGS" />}

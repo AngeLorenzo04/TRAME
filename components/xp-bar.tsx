@@ -1,7 +1,9 @@
 "use client"
 
+import { memo } from "react"
+
 /** Decaying XP bar. percent = current fill 0..1, decay = fraction lost this day */
-export function XPBar({ xp, decay }: { xp: number; decay: number }) {
+export const XPBar = memo(function XPBar({ xp, decay }: { xp: number; decay: number }) {
   // Visual fill based on progress toward next level threshold (mock: xp % 3000 / 3000)
   const fill = Math.max(0, Math.min(1, (xp % 3000) / 3000))
   const segments = 20
@@ -41,4 +43,4 @@ export function XPBar({ xp, decay }: { xp: number; decay: number }) {
       </p>
     </div>
   )
-}
+})
