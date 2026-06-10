@@ -19,11 +19,16 @@ export const LoginTerminal = memo(function LoginTerminal() {
     setError(null)
 
     try {
+      if (!supabase) throw new Error("SUPABASE_NOT_CONFIGURED")
 
-      // HARD BYPASS FOR LOCAL TESTING
-      useGameStore.getState().setSessionUser({ id: 'local-test-pilot', email } as any)
-      return;
-
+      if (mode === "login") {
+        const { error } = await supabase.auth.signInWithPassword({ email, password })
+        if (error) throw error
+      } else {
+        const { error } = await supabase.auth.signUp({ email, password })
+        if (error) throw error
+        setError("BIOMETRIC_DATA_SAVED. CHECK COMMS FOR VERIFICATION.")
+      }
     } catch (err: any) {
       setError(err.message || "ACCESS_DENIED")
     } finally {
