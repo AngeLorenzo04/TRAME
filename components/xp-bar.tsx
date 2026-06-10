@@ -1,25 +1,28 @@
 "use client"
-
 import { memo } from "react"
 
-/** Decaying XP bar. percent = current fill 0..1, decay = fraction lost this day */
 export const XPBar = memo(function XPBar({ xp, decay }: { xp: number; decay: number }) {
-  // Visual fill based on progress toward next level threshold (mock: xp % 3000 / 3000)
   const fill = Math.max(0, Math.min(1, (xp % 3000) / 3000))
-  const segments = 20
+  const segments = 24
   const filledSegments = Math.round(fill * segments)
   const decaySegments = Math.round(decay * segments)
 
   return (
-    <div className="w-full">
-      <div className="mb-2 flex items-end justify-between">
-        <span className="text-[8px] text-steel md:text-[10px]">XP POOL</span>
-        <span className="text-[8px] text-[var(--color-blood)] md:text-[10px]">
-          -{Math.round(decay * 100)}% DECAY
-        </span>
+    <div className="w-full space-y-2">
+      <div className="flex items-end justify-between px-1">
+        <div className="flex flex-col">
+          <span className="text-[7px] font-black text-steel uppercase tracking-widest">EXPERIENCE POOL</span>
+          <p className="text-[18px] font-black leading-none text-paper uppercase tracking-tighter">
+            {xp.toLocaleString()} <span className="text-[var(--color-blood)] text-[12px]">XP</span>
+          </p>
+        </div>
+        <div className="flex flex-col items-end">
+          <span className="text-[7px] font-black text-[var(--color-blood)] uppercase tracking-widest">DECAY RATE</span>
+          <p className="text-[12px] font-black leading-none text-[var(--color-blood)]">-{Math.round(decay * 100)}%</p>
+        </div>
       </div>
 
-      <div className="flex gap-[2px] bg-[var(--color-ink-deep)] p-1 pixel-border">
+      <div className="flex gap-[2px] bg-[var(--color-ink-deep)] p-2 pixel-border border-b-4 border-b-black/40">
         {Array.from({ length: segments }).map((_, i) => {
           const isFilled = i < filledSegments
           const isDecaying = i >= filledSegments - decaySegments && i < filledSegments
@@ -28,19 +31,15 @@ export const XPBar = memo(function XPBar({ xp, decay }: { xp: number; decay: num
               key={i}
               className={
                 isDecaying
-                  ? "h-4 flex-1 animate-decay bg-[var(--color-steel)]"
+                  ? "h-5 flex-1 animate-decay bg-[var(--color-steel)]"
                   : isFilled
-                    ? "h-4 flex-1 bg-[var(--color-blood)]"
-                    : "h-4 flex-1 bg-[var(--color-ink)]"
+                    ? "h-5 flex-1 bg-[var(--color-blood)] shadow-[inset_-2px_-2px_0_0_var(--color-blood-dark)]"
+                    : "h-5 flex-1 bg-[var(--color-ink)]"
               }
             />
           )
         })}
       </div>
-
-      <p className="mt-2 text-center text-[16px] text-paper md:text-[22px]">
-        {xp.toLocaleString()} <span className="text-[var(--color-blood)]">XP</span>
-      </p>
     </div>
   )
 })

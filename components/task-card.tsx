@@ -17,48 +17,46 @@ export const TaskCard = memo(function TaskCard({
       onClick={() => onToggle(task.id)}
       aria-pressed={task.completed}
       className={cn(
-        "group flex flex-col gap-3 p-3 text-left transition-transform duration-100 will-change-transform",
-        "hover:scale-[1.03] active:scale-[0.96]",
+        "group flex flex-col gap-3 p-4 text-left transition-all duration-75 will-change-transform",
+        "hover:-translate-y-1 active:translate-y-0",
         task.completed
-          ? "bg-[var(--color-blood)] text-paper pixel-border-red"
-          : "bg-[var(--color-ink-deep)] text-paper pixel-border hover:pixel-border-red",
+          ? "bg-[var(--color-blood)] text-paper pixel-border-red shadow-[4px_4px_0_0_var(--color-blood-dark)]"
+          : "bg-[var(--color-ink-deep)] text-paper pixel-border hover:bg-[var(--color-ink)]",
       )}
     >
       <div className="flex items-start justify-between gap-2">
-        {/* Checkbox */}
         <span
           className={cn(
-            "grid size-6 shrink-0 place-items-center",
+            "grid size-7 shrink-0 place-items-center border-2 border-current transition-colors",
             task.completed
               ? "bg-paper text-[var(--color-blood)]"
-              : "bg-[var(--color-ink)] text-transparent group-hover:text-steel",
+              : "bg-[var(--color-ink)] text-steel group-hover:text-paper",
           )}
         >
-          <Check className="size-4 pixelated" strokeWidth={3} aria-hidden="true" />
+          {task.completed && <Check className="size-5 pixelated" strokeWidth={4} aria-hidden="true" />}
         </span>
 
-        {/* Streak */}
         <span
           className={cn(
-            "flex items-center gap-1 text-[8px]",
+            "flex items-center gap-1 text-[9px] font-bold",
             task.completed ? "text-paper" : "text-[var(--color-blood)]",
           )}
         >
-          <Flame className="size-3 pixelated" strokeWidth={2.5} aria-hidden="true" />
+          <Flame className={cn("size-4 pixelated", !task.completed && "animate-flame")} strokeWidth={2.5} aria-hidden="true" />
           {task.streak}
         </span>
       </div>
 
-      <p className="text-[9px] leading-relaxed md:text-[10px]">{task.name}</p>
+      <p className="text-[10px] font-bold leading-tight md:text-[12px] uppercase tracking-tighter">{task.name}</p>
 
-      <span
-        className={cn(
-          "text-[8px] md:text-[9px]",
-          task.completed ? "text-paper" : "text-steel",
-        )}
-      >
-        +{task.xpReward} XP
-      </span>
+      <div className="mt-auto flex items-center justify-between border-t border-current/20 pt-2">
+        <span className={cn("text-[8px] font-bold", task.completed ? "text-paper" : "text-steel")}>
+          {task.category.toUpperCase()}
+        </span>
+        <span className={cn("text-[9px] font-black", task.completed ? "text-paper" : "text-[var(--color-gold)]")}>
+          +{task.xpReward} XP
+        </span>
+      </div>
     </button>
   )
 })

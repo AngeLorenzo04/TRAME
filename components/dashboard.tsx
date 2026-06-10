@@ -2,7 +2,7 @@
 
 import { useMemo, useCallback, memo, useState, useEffect } from "react"
 import { BrowserRouter, Routes, Route, useNavigate, useParams, Navigate, useLocation } from "react-router-dom"
-import { Flame, Map, Award, Trophy } from "lucide-react"
+import { Flame, Map, Award, Trophy, Info } from "lucide-react"
 import { Sidebar, type NavKey } from "@/components/sidebar"
 import { Header } from "@/components/header"
 import { AvatarDisplay } from "@/components/avatar-display"
@@ -24,18 +24,18 @@ const SectionTitle = memo(function SectionTitle({
   count?: number
 }) {
   return (
-    <div className="mb-3 flex items-end justify-between gap-3">
+    <div className="mb-4 flex items-end justify-between gap-4 border-b-2 border-[var(--color-ink)] pb-2">
       <div className="flex flex-col gap-1">
-        <h2 className="flex items-center gap-2 text-[10px] leading-relaxed text-paper md:text-[12px]">
-          <span className="inline-block size-2 bg-[var(--color-blood)]" aria-hidden="true" />
+        <h2 className="flex items-center gap-3 text-[12px] font-black leading-none text-paper md:text-[14px] uppercase tracking-tighter">
+          <span className="size-3 bg-[var(--color-blood)] shadow-[2px_2px_0_0_var(--color-blood-dark)]" aria-hidden="true" />
           {children}
         </h2>
         {hint && (
-          <p className="pl-4 text-[7px] leading-relaxed text-steel md:text-[8px]">{hint}</p>
+          <p className="pl-6 text-[8px] font-bold text-steel uppercase tracking-tight">{hint}</p>
         )}
       </div>
       {typeof count === "number" && (
-        <span className="shrink-0 bg-[var(--color-ink-deep)] px-2 py-1 text-[8px] text-[var(--color-blood)] pixel-border md:text-[9px]">
+        <span className="shrink-0 bg-[var(--color-blood)] px-3 py-1 text-[10px] font-black text-paper pixel-border-red">
           {count}
         </span>
       )}
@@ -45,7 +45,7 @@ const SectionTitle = memo(function SectionTitle({
 
 const TrameGrid = memo(function TrameGrid({ onOpen }: { onOpen?: (id: number) => void }) {
   return (
-    <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
+    <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
       {trame.map((t, i) => (
         <TrameCard key={t.id} trame={t} index={i} onOpen={onOpen} />
       ))}
@@ -66,54 +66,57 @@ function DashboardView() {
     }
   }, [tasks])
 
-  const statList = useMemo(() => ["Atletico", "Riposato", "Focus"], [])
+  const statList = useMemo(() => ["ATLETICO", "RIPOSATO", "FOCUS"], [])
 
   return (
-    <div className="flex flex-col gap-8">
+    <div className="flex flex-col gap-10">
       <div className="animate-pixel-in">
         <Header xp={user.xp} decay={user.dailyDecay} level={user.level} />
       </div>
 
-      <div className="grid gap-6 lg:grid-cols-3">
+      <div className="grid gap-8 lg:grid-cols-3">
         {/* Left column: avatar + streak */}
-        <div className="flex flex-col gap-6">
+        <div className="flex flex-col gap-8">
           <section className="animate-pixel-in" style={{ animationDelay: "60ms" }}>
-            <SectionTitle hint="Il tuo personaggio cresce con le abitudini">AVATAR</SectionTitle>
+            <SectionTitle hint="BIO-METRICS: SYNC STATUS">AVATAR</SectionTitle>
             <AvatarDisplay stats={statList} />
           </section>
           <section className="animate-pixel-in" style={{ animationDelay: "120ms" }}>
-            <SectionTitle hint="Non spezzare la catena!">STREAK</SectionTitle>
+            <SectionTitle hint="CONSECUTIVE UPTIME">STREAK</SectionTitle>
             <StreakCounter days={user.streak} />
           </section>
         </div>
 
         {/* Middle/right: check-in tasks */}
         <section className="animate-pixel-in lg:col-span-2" style={{ animationDelay: "180ms" }}>
-          <SectionTitle hint={`${earned} XP guadagnati oggi · tocca per completare`} count={done}>
-            CHECK-IN GIORNALIERO
+          <SectionTitle hint={`${earned} XP ACCUMULATED TODAY`} count={done}>
+            DAILY OBJECTIVES
           </SectionTitle>
 
           {/* Daily progress bar */}
-          <div className="mb-3 flex items-center gap-2 bg-[var(--color-ink-deep)] p-2 pixel-border">
-            <div className="flex flex-1 gap-[2px]">
+          <div className="mb-6 flex items-center gap-4 bg-[var(--color-ink-deep)] p-4 pixel-border border-b-4 border-b-black/40">
+            <div className="flex flex-1 gap-[3px]">
               {tasks.map((t) => (
                 <div
                   key={t.id}
                   className={
                     t.completed
-                      ? "h-3 flex-1 animate-seg bg-[var(--color-blood)]"
-                      : "h-3 flex-1 bg-[var(--color-ink)]"
+                      ? "h-4 flex-1 animate-seg bg-[var(--color-blood)] shadow-[inset_-2px_-2px_0_0_var(--color-blood-dark)]"
+                      : "h-4 flex-1 bg-[var(--color-ink)]"
                   }
                   aria-hidden="true"
                 />
               ))}
             </div>
-            <span className="shrink-0 text-[8px] text-paper md:text-[9px]">
-              {done}/{total}
-            </span>
+            <div className="flex flex-col items-end">
+               <span className="text-[10px] font-black text-paper uppercase">SYNC</span>
+               <span className="text-[12px] font-black text-[var(--color-blood)]">
+                {done}/{total}
+              </span>
+            </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-3 md:grid-cols-3">
+          <div className="grid grid-cols-2 gap-4 md:grid-cols-3">
             {tasks.map((task) => (
               <TaskCard key={task.id} task={task} onToggle={toggleTask} />
             ))}
@@ -123,20 +126,20 @@ function DashboardView() {
 
       {/* Trame */}
       <section className="animate-pixel-in" style={{ animationDelay: "240ms" }}>
-        <SectionTitle hint="Quest a lungo termine che intrecciano le tue abitudini" count={trame.length}>
-          TRAME ATTIVE
+        <SectionTitle hint="NARRATIVE PROGRESSION TRACKER" count={trame.length}>
+          ACTIVE QUESTS
         </SectionTitle>
         <TrameGrid onOpen={(id) => navigate(`/trame/${id}`)} />
       </section>
 
       {/* Quick stats */}
       <section className="animate-pixel-in" style={{ animationDelay: "300ms" }}>
-        <SectionTitle>QUICK STATS</SectionTitle>
-        <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
-          <StatsCard icon={Flame} label="STREAK ATTUALE" value={`${quickStats.currentStreak} giorni`} />
-          <StatsCard icon={Map} label="TRAME ATTIVE" value={`${quickStats.activeTrames} trame`} />
-          <StatsCard icon={Award} label="ACHIEVEMENT" value={`${quickStats.achievementsUnlocked} badge`} />
-          <StatsCard icon={Trophy} label="LEADERBOARD" value={`#${quickStats.leaderboardRank}`} />
+        <SectionTitle hint="GLOBAL RANKING & ACHIEVEMENTS">SYSTEM STATS</SectionTitle>
+        <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
+          <StatsCard icon={Flame} label="STREAK" value={`${quickStats.currentStreak} DAYS`} />
+          <StatsCard icon={Map} label="QUESTS" value={`${quickStats.activeTrames} ACTIVE`} />
+          <StatsCard icon={Award} label="BADGES" value={`${quickStats.achievementsUnlocked} UNLOCKED`} />
+          <StatsCard icon={Trophy} label="RANK" value={`#${quickStats.leaderboardRank}`} />
         </div>
       </section>
     </div>
@@ -146,15 +149,15 @@ function DashboardView() {
 const TrameView = memo(function TrameView() {
   const navigate = useNavigate()
   return (
-    <div className="flex flex-col gap-6">
-      <div className="animate-pixel-in bg-[var(--color-ink)] p-4 pixel-border md:p-5">
-        <h1 className="text-[16px] text-[var(--color-blood)] md:text-[22px]">TRAME</h1>
-        <p className="mt-2 text-[8px] leading-relaxed text-steel md:text-[10px]">
-          {"// Quest narrative che raggruppano le tue abitudini in un percorso a tappe"}
+    <div className="flex flex-col gap-8">
+      <div className="animate-pixel-in scanlines bg-[var(--color-ink)] p-6 pixel-border">
+        <h1 className="text-[20px] font-black text-[var(--color-blood)] md:text-[28px] uppercase tracking-tighter">QUEST LOG</h1>
+        <p className="mt-2 text-[9px] font-bold leading-relaxed text-steel uppercase tracking-widest">
+          {"// ACCESSING NARRATIVE DATABASE... STREAMS SYNCED"}
         </p>
       </div>
       <section>
-        <SectionTitle count={trame.length}>IN CORSO</SectionTitle>
+        <SectionTitle count={trame.length}>CURRENT EXPEDITIONS</SectionTitle>
         <TrameGrid onOpen={(id) => navigate(`/trame/${id}`)} />
       </section>
     </div>
@@ -171,14 +174,22 @@ const TrameDetailWrapper = () => {
   return <TrameDetail trame={selectedTrame} onBack={() => navigate("/trame")} />
 }
 
-const Placeholder = memo(function Placeholder({ title }: { title: string }) {
+const Placeholder = memo(function Placeholder({ title, subtitle }: { title: string, subtitle?: string }) {
   return (
-    <div className="grid min-h-[60vh] animate-pixel-in place-items-center bg-[var(--color-ink-deep)] p-8 pixel-border">
-      <div className="flex flex-col items-center gap-4 text-center">
-        <span className="text-[24px] text-[var(--color-blood)] md:text-[32px]">{title}</span>
-        <p className="text-[8px] leading-relaxed text-steel md:text-[10px]">
-          {"// SEZIONE IN COSTRUZIONE"}
-        </p>
+    <div className="grid min-h-[60vh] animate-pixel-in place-items-center bg-[var(--color-ink-deep)] p-8 pixel-border scanlines">
+      <div className="flex flex-col items-center gap-6 text-center">
+        <div className="size-20 bg-[var(--color-blood)] pixel-border-red flex items-center justify-center">
+          <Info className="size-12 text-paper animate-pulse" />
+        </div>
+        <div className="space-y-2">
+          <span className="text-[28px] font-black text-paper md:text-[40px] uppercase tracking-tighter">{title}</span>
+          <p className="text-[10px] font-bold leading-relaxed text-steel uppercase tracking-widest">
+            {subtitle || "// ENCRYPTED DATA SECTOR - AUTHORIZATION REQUIRED"}
+          </p>
+        </div>
+        <button className="pixel-btn text-[10px] font-black uppercase tracking-widest mt-4">
+          RETRY CONNECTION
+        </button>
       </div>
     </div>
   )
@@ -198,17 +209,17 @@ function DashboardContent() {
   }, [navigate])
 
   return (
-    <main className="flex min-h-screen gap-4 bg-background p-3 md:gap-6 md:p-6">
+    <main className="flex min-h-screen gap-6 bg-background p-4 md:gap-8 md:p-8 cursor-default">
       <Sidebar active={active} onSelect={handleSelect} />
 
-      <div className="min-w-0 flex-1">
+      <div className="min-w-0 flex-1 overflow-y-auto">
         <Routes>
           <Route path="/" element={<DashboardView />} />
           <Route path="/trame" element={<TrameView />} />
           <Route path="/trame/:id" element={<TrameDetailWrapper />} />
-          <Route path="/task" element={<Placeholder title="TASK" />} />
-          <Route path="/profilo" element={<Placeholder title="PROFILO" />} />
-          <Route path="/settings" element={<Placeholder title="SETTINGS" />} />
+          <Route path="/task" element={<Placeholder title="TASK TERMINAL" subtitle="// ACCESS DENIED: COMPLETE MORE QUESTS" />} />
+          <Route path="/profilo" element={<Placeholder title="PILOT PROFILE" subtitle="// LOADING BIOMETRIC DATA..." />} />
+          <Route path="/settings" element={<Placeholder title="SYSTEM CONFIG" subtitle="// HARDWARE INTERFACE OFFLINE" />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </div>
